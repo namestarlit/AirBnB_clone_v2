@@ -1,0 +1,9 @@
+argcomplete==1.12.3
+greenlet==2.0.1
+importlib-metadata==4.11.3
+pip==23.1.2
+setuptools==67.8.0
+SQLAlchemy==2.0.16
+typing_extensions==4.6.3
+wheel==0.38.4
+zipp==3.11.0
