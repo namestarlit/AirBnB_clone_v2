@@ -21,20 +21,17 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """returns a dictionary
-        Return:
-            returns a dictionary of __object
-        """
-        if cls is not None:
-            new_dictionary = {}
-            for key, values in FileStorage.__objects.items():
-                if (type(cls) is str):
-                    cls = eval(cls)
-                if (cls.__name__ in key):
-                    new_dictionary.update({key: values})
-            return new_dictionary
+        """returns the dictionary __objects"""
+
+        # if cls is not given, return all objects
+        if not cls:
+            return FileStorage.__objects
+        elif isinstance(cls, str):
+            return {key: value for key, value in FileStorage.__objects.items()
+                    if isinstance(value, eval(cls))}
         else:
-            return self.__objects
+            return {key: value for key, value in FileStorage.__objects.items()
+                    if isinstance(value, cls)}
 
     def new(self, obj):
         """sets __object to given obj
@@ -66,11 +63,10 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """ Delete object
-        """
+        """delete obj from __objects if it’s inside"""
         if obj is not None:
-            key = (type(obj).__name__) + '.' + obj.__dict__['id']
-            del self.__objects[key]
+            del self.__objects[obj.__class__.__name__ + '.' + obj.id]
+            self.save()
 
     def close(self):
         """
