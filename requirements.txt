@@ -1,6 +1,0 @@
-argcomplete @ file:///tmp/build/80754af9/argcomplete_1618920853202/work
-greenlet @ file:///work/ci_py311/greenlet_1676825247229/work
-importlib-metadata @ file:///work/ci_py311/importlib-metadata_1676822979169/work
-SQLAlchemy==2.0.16
-typing_extensions==4.6.3
-zipp @ file:///work/ci_py311/zipp_1676822894295/work

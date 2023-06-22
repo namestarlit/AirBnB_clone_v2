@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#/usr/bin/python3
 """This is the base model class for AirBnB"""
 import uuid
 import models
@@ -86,4 +86,3 @@ class BaseModel:
         Deletes the current instance from the storage
         """
         models.storage.delete(self)
-        
