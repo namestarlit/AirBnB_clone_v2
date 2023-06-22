@@ -1,7 +1,11 @@
 argcomplete==1.12.3
 greenlet==2.0.1
 importlib-metadata==4.11.3
+mysql-connector-python==8.0.33
+mysqlclient==2.2.0
 pip==23.1.2
+protobuf==3.20.3
+python-dotenv==1.0.0
 setuptools==67.8.0
 SQLAlchemy==2.0.16
 typing_extensions==4.6.3
