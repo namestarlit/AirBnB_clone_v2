@@ -18,7 +18,6 @@ class DBStorage:
     """
     __engine = None
     __session = None
-    #models = {User, State, City, Amenity, Place, Review}
     models = {User, State, City}
 
     def __init__(self):
@@ -86,4 +85,3 @@ class DBStorage:
         call remove() method on the private session attribute (self.__session)
         """
         self.__session.close()
-        

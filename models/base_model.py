@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#!/usr/bin/python3
 """This is the base model class for AirBnB"""
 import uuid
 import models
@@ -39,8 +39,6 @@ class BaseModel:
                 self.created_at = datetime.now()
                 self.updated_at = datetime.now()
             for key, value in kwargs.items():
-                #if key == "created_at" or key == "updated_at":
-                #    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
                     setattr(self, key, value)
 
@@ -78,7 +76,7 @@ class BaseModel:
         my_dict["created_at"] = self.created_at.isoformat()
         my_dict["updated_at"] = self.updated_at.isoformat()
         if "_sa_instance_state" in my_dict.keys():
-            del(my_dict["_sa_instance_state"])
+            del (my_dict["_sa_instance_state"])
         return my_dict
 
     def delete(self):
