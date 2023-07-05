@@ -1,7 +1,6 @@
-from fabric import task
 from datetime import datetime
-import os
-import shutil
+from fabric.api import local
+from os.path import isdir
 
 @task
 def do_pack():
