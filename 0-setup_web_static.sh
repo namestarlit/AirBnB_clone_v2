@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets up a web server for deployment of web_static.
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Exit immediately
 
 if ! command -v nginx &> /dev/null; then
     sudo apt-get update
