@@ -1,7 +1,7 @@
 from fabric import task
 
 @task
-def do_pack(c):
+def do_pack():
     # Task implementation here
     pass
 
