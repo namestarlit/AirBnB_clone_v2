@@ -5,9 +5,8 @@ from os import getenv
 
 from sqlalchemy import Column
 from sqlalchemy import String
-from sqlachmemy.orm import relationship
+from sqlalchemy.orm import relationship
 
-import models
 from models.base_model import BaseModel, Base
 
 
