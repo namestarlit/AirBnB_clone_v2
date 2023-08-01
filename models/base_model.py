@@ -14,6 +14,8 @@ import models
 
 if getenv('HBNB_TYPE_STORAGE') == "db":
     Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel(object):
@@ -25,7 +27,8 @@ class BaseModel(object):
         updated_at (sqlalchemy DateTime): The datetime of last update.
     """
     if getenv('HBNB_TYPE_STORAGE') == "db":
-        id = Column(String(60), primary_key=True)
+        id = Column(String(60), primary_key=True,
+                    default=str(uuid4()))
         created_at = Column(DateTime, nullable=False,
                             default=datetime.utcnow())
         updated_at = Column(DateTime, nullable=False,
