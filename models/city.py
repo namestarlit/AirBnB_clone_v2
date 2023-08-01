@@ -1,28 +1,27 @@
 #!/usr/bin/python3
-"""This is the city class"""
-from models.base_model import BaseModel, Base
+"""Module contains a City class."""
 from os import getenv
-import sqlalchemy
+
+from sqlalchemy import Column
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, ForeignKey
+
+import models
+from models.base_model import BaseModel, Base
 
 
 class City(BaseModel, Base):
-    """This is the class for City
-    Attributes:
-        state_id: The state id
-        name: input name
-    """
-    if getenv('HBNB_TYPE_STORAGE') == 'db':
-        __tablename__ = 'cities'
+    """Represents a City class."""
+    if getenv('HBNB_TYPE_STORAGE') == "db":
+        __tablename__ = "cities"
         name = Column(String(128), nullable=False)
-        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        places = relationship("Place", cascade="all, delete-orphan",
-                              backref="cities")
+        state_id = Column(String(60), ForeignKey('states.id'))
+        places = relationship('Place', backref='cities',
+                              cascade='all, delete-orphan')
     else:
-        name = ""
         state_id = ""
+        name = ""
 
     def __init__(self, *args, **kwargs):
-        """initializes city"""
+        """Initializes an instance of City."""
         super().__init__(*args, **kwargs)
