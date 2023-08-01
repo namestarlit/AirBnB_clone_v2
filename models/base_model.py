@@ -63,7 +63,7 @@ class BaseModel(object):
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self, save_to_disk=False):
+    def to_dict(self):
         """Returns a dictionary of all the key/value pairs."""
         # Create a new dict and directly assign the class name
         new_dict = {'__class__': self.__class__.__name__}
