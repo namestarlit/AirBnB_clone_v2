@@ -6,7 +6,6 @@ from sqlalchemy import Column
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import relationship
 
-import models
 from models.base_model import BaseModel, Base
 
 
