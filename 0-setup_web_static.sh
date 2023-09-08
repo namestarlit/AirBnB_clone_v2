@@ -26,10 +26,10 @@ if [ -f /var/www/html/index.nginx-debian.html ]; then
 fi
 
 # Create data directories and files.
-mkdir -p /data/web_static/releases/test
-mkdir -p /data/web_static/shared
-chown -R ubuntu:ubuntu /data
-ln -sf /data/web_static/releases/test /data/web_static/current
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
+chown -R ubuntu:ubuntu /data/
+ln -sf /data/web_static/releases/test/ /data/web_static/current
 
 echo "web_static works!" | tee /data/web_static/releases/test/index.html
 
@@ -50,7 +50,7 @@ server {
     try_files \$uri \$uri/ =404;
   }
 
-  location /hbnb_static/ {
+  location /hbnb_static {
     alias /data/web_static/current/;
     index index.htm index.html;
   }
