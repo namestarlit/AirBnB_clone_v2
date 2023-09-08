@@ -29,10 +29,8 @@ fi
 mkdir -p /data/web_static/releases/test/
 mkdir -p /data/web_static/shared/
 ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -R ubuntu:ubuntu /data/
-
 echo "web_static works!" | tee /data/web_static/releases/test/index.html
-
+chown -R ubuntu:ubuntu /data/
 
 # Update nginx configuration
 cat <<EOF > /etc/nginx/sites-available/default
