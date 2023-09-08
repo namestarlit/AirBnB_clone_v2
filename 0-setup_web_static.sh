@@ -28,8 +28,8 @@ fi
 # Create data directories and files.
 mkdir -p /data/web_static/releases/test/
 mkdir -p /data/web_static/shared/
-chown -R ubuntu:ubuntu /data/
 ln -sf /data/web_static/releases/test/ /data/web_static/current
+chown -R ubuntu:ubuntu /data/
 
 echo "web_static works!" | tee /data/web_static/releases/test/index.html
 
