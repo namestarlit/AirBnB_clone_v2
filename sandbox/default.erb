@@ -1,0 +1,26 @@
+server {
+  listen 80;
+  listen [::]:80;
+
+  server_name default_server;
+  add_header X-Served-By $hostname;
+
+  root /var/www/html;
+  index index.htm index.html;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /hbnb_static {
+    alias /data/web_static/current/;
+    index index.htm index.html;
+  }
+
+  location /redirect_me {
+    return 301 'https://www.youtube.com/watch?v=axlUv9evU2k';
+  }
+
+  # Redirect error page
+  error_page 404 /404.html;
+}
