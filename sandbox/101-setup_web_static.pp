@@ -5,40 +5,7 @@ package { 'nginx':
   ensure => installed,
 }
 
-# Create necessary directories
-file { [
-  '/data',
-  '/data/web_static',
-  '/data/web_static/releases',
-  '/data/web_static/shared',
-  '/data/web_static/releases/test',
-]:
-  ensure  => directory,
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  recurse => true,
-}
-
-# Create a fake HTML file for testing
-file { '/data/web_static/releases/test/index.html':
-  content => 'web_static test',
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-}
-
-# Create or recreate the symbolic link
-file { '/data/web_static/current':
-  ensure => link,
-  target => '/data/web_static/releases/test',
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
-  notify => Service['nginx'],
-}
-
-# Update Nginx configuration
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  content => "
+$nginx_conf = "
 server {
   listen 80;
   listen [::]:80;
@@ -65,7 +32,43 @@ server {
   # Redirect error page
   error_page 404 /404.html;
 }
-",
+"
+# Create nginx directories if they don't exist
+file { [
+  '/etc/nginx/sites-available',
+  '/etc/nginx/sites-enabled',
+  '/var/www/html',
+]:
+  ensure => directory,
+}
+
+# Create data directories and files
+file { [
+  '/data/web_static/releases/test/',
+  '/data/web_static/shared/',
+]:
+  ensure => directory,
+  owner  => 'ubuntu'
+  group  => 'ubuntu'
+}
+
+file { '/data/web_static/releases/test/index.html':
+  content => 'web_static works!',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+}
+
+file { '/data/web_static/current':
+  ensure  => link,
+  target  => '/data/web_static/releases/test/',
+  require => File['/data/web_static/releases/test/index.html'],
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+}
+
+# Update nginx configuration
+file { '/etc/nginx/sites-available/default':
+  content => $nginx_conf
   require => Package['nginx'],
   notify  => Service['nginx'],
 }
@@ -80,6 +83,7 @@ file { '/etc/nginx/sites-enabled/default':
 
 # Restart Nginx service
 service { 'nginx':
-  ensure => 'running',
-  enable => true,
+  ensure  => 'running',
+  enable  => true,
+  require => File['/etc/nginx/sites-enabled/default'],
 }
