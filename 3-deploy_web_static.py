@@ -12,11 +12,13 @@ except ImportError as e:
 
 def deploy():
     """Create and distribute an archive to web servers."""
-    # Create archive file
     try:
+        # Create archive file
         archive_path = do_pack()
         if not os.path.isfile(archive_path):
             return False
+
+        # Distribute an archive to web servers.
         return do_deploy(archive_path)
     except Exception:
         return False
