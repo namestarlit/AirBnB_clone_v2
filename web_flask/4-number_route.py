@@ -33,6 +33,7 @@ def python(text='is cool'):
     text = text.replace('_', ' ')
     return f"Python {text}"
 
+
 @app.route('/number/<int:n>')
 def number(n):
     """Displays 'n' if it's a number."""
