@@ -30,9 +30,9 @@ class BaseModel(object):
         id = Column(String(60), primary_key=True,
                     default=str(uuid4()))
         created_at = Column(DateTime, nullable=False,
-                            default=datetime.utcnow())
+                            default=datetime.utcnow)
         updated_at = Column(DateTime, nullable=False,
-                            default=datetime.utcnow())
+                            default=datetime.utcnow)
 
     def __init__(self, *args, **kwargs):
         """Iniatializes an instance of BaseModel class.
@@ -76,7 +76,7 @@ class BaseModel(object):
             if key == 'created_at' or key == 'updated_at':
                 new_dict[key] = value.isoformat()
             elif (key != '_password' and
-                  key not in ('amenities', 'reviews', '_sa_instance_state')):
+                    key not in ('amenities', 'reviews', '_sa_instance_state')):
                 new_dict[key] = value
 
         return new_dict

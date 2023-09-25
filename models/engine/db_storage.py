@@ -46,20 +46,27 @@ class DBStorage:
                   .format(user, password, host, db)
                   )
         self.__engine = create_engine(db_url, pool_pre_ping=True)
-        if getenv("HBNB_ENV") == "test":
+        if getenv("HBNB_ENV") == "dev":
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
         """Returns a dictionary."""
         sql_dict = {}
-        models = list(self.model_mapping.values())
+
         if cls:
-            models = [self.model_mapping[cls.__name__]]
-        for model in models:
-            objects = self.__session.query(model).all()
-            for obj in objects:
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                sql_dict[key] = obj
+            # Query the specified class
+            objects = self.__session.query(cls).all()
+        else:
+            # Query all available classes
+            models = list(self.model_mapping.values())
+            objects = []
+            for model in models:
+                objects.extend(self.__session.query(model).all())
+
+        for obj in objects:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            sql_dict[key] = obj
+
         return sql_dict
 
     def new(self, obj):
