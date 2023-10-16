@@ -1,50 +1,39 @@
 #!/usr/bin/python3
-"""Distribute an archive to web servers using Fabric."""
+"""2-do_deploy_web_static.py module"""
+from fabric.api import *
+from os.path import isfile
 
-import os
-from fabric.api import env, put, run
-
-
-env.user = 'ubuntu'
-env.hosts = ['54.158.187.197', '100.25.188.196']
-env.warn_only = True
+prv_ky_pth = "~/.ssh/school"
+env.user = ['ubuntu']
+env.hosts = ["ubuntu@18.204.16.34", "ubuntu@100.26.246.77"]
+env.key_filename = prv_ky_pth
 
 
 def do_deploy(archive_path):
-    """Distribute an archive to web servers."""
-    if not os.path.isfile(archive_path):
+    """Distributes an archive to your web servers
+    archive_path: Path to archive
+    Returns: True if all operations done sucessful, otherwise False
+    """
+    if isfile(archive_path) is False:
         return False
 
+    achv_tgz = archive_path.split('/')[1]
+    achv = archive_path.split('/')[1].split('.')[0]
+
     try:
-        # Upload the archive to the '/tmp/' directory on the web servers
-        put(archive_path, '/tmp/')
-
-        # Extract the archive to the releases directory
-        archive_filename = os.path.basename(archive_path)
-        release_name = os.path.splitext(archive_filename)[0]
-        release_path = '/data/web_static/releases'
-
-        run(f'mkdir -p {release_path}/{release_name}/')
-        run('tar -xzf /tmp/{} -C {}/{}/'
-            .format(archive_filename, release_path, release_name))
-
-        # Delete the archive from the web servers
-        run(f'rm /tmp/{archive_filename}')
-
-        # Move web_static files to web_static current version directory
-        move_command = (f'mv {release_path}/{release_name}/web_static/* '
-                        f'{release_path}/{release_name}/')
-        run(move_command)
-        run(f'rm -rf {release_path}/{release_name}/web_static')
-
-        # Delete the symbolic link '/data/web_static/current' if exists
-        current_symlink = '/data/web_static/current'
-        run(f'rm -rf {current_symlink}')
-
-        # Create a new symbolic link to the new version
-        new_symlink = f'{release_path}/{release_name}'
-        run(f'ln -s {new_symlink} {current_symlink}')
-
+        put(archive_path, "/tmp/")
+        run("mkdir -p /data/web_static/releases/{}/".
+            format(achv))
+        run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
+            format(achv_tgz, achv))
+        run("rm /tmp/{}".format(achv_tgz))
+        run("mv /data/web_static/releases/{}/web_static/* \
+            /data/web_static/releases/{}/".format(achv, achv))
+        run("rm -rf /data/web_static/releases/{}/web_static".
+            format(achv))
+        run("rm -rf /data/web_static/current")
+        run("ln -sf /data/web_static/releases/{}/ \
+            /data/web_static/current".format(achv))
         print("New version deployed!")
         return True
     except Exception:

@@ -1,37 +1,34 @@
 #!/usr/bin/python3
-"""Module contains a State class."""
-
-from os import getenv
-
-from sqlalchemy import Column
-from sqlalchemy import String
-from sqlalchemy.orm import relationship
-
+""" State Module for HBNB project """
+import models
 from models.base_model import BaseModel, Base
 from models.city import City
+from os import getenv
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String
 
 
 class State(BaseModel, Base):
-    """Represents State class."""
-    if getenv('HBNB_TYPE_STORAGE') == "db":
+    """ This class defines a state """
+
+    if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "states"
         name = Column(String(128), nullable=False)
-        cities = relationship('City', backref='states',
-                              cascade='all, delete')
+        cities = relationship(
+            "City",
+            backref="state",
+            cascade="all, delete-orphan")
     else:
         name = ""
 
     def __init__(self, *args, **kwargs):
-        """Initializes an instance of State."""
+        """initializing state instance"""
         super().__init__(*args, **kwargs)
 
-    if getenv('HBNB_TYPE_STORAGE', None) != "db":
+    if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def cities(self):
-            """File storage getter attribute that returns City instances."""
-            cities_ = models.storage.all(City).values()
-            cities_list = []
-            for city in cities_:
-                if city.state_id == self.id:
-                    cities_list.append(city)
-            return cities_list
+            """Cities getter attribute for file storage"""
+            return [city for city
+                    in models.storage.all(City).values()
+                    if city.state_id == self.id]

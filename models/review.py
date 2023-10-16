@@ -1,27 +1,22 @@
 #!/usr/bin/python3
-"""Module containing a Review class."""
-
-from os import getenv
-
-from sqlalchemy import Column
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import relationship
-
+""" Review module for the HBNB project """
 from models.base_model import BaseModel, Base
+from os import getenv
+from sqlalchemy import Column, String, ForeignKey
 
 
 class Review(BaseModel, Base):
-    """Represents a Review class."""
-    if getenv('HBNB_TYPE_STORAGE') == "db":
+    """ This class stores review information """
+    if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "reviews"
-        place_id = Column(String(60), ForeignKey('places.id'))
-        user_id = Column(String(60), ForeignKey('users.id'))
-        text = Column(String(128), nullable=False)
+        text = Column(String(1024), nullable=False)
+        place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
+        user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     else:
         place_id = ""
         user_id = ""
         text = ""
 
     def __init__(self, *args, **kwargs):
-        """Initializes an instance of Review."""
+        """initialization of review instance"""
         super().__init__(*args, **kwargs)
