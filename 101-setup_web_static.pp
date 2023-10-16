@@ -1,34 +1,85 @@
-# puppet manifest preparing a server for static content deployment
-exec { 'apt-get-update':
-  command => '/usr/bin/env apt-get -y update',
+# Puppet manifest to set up web servers for web_static deployment
+
+# Install Nginx if not installed
+package { 'nginx':
+  ensure => installed,
 }
--> exec {'b':
-  command => '/usr/bin/env apt-get -y install nginx',
+
+# Create necessary directories
+file { [
+  '/data',
+  '/data/web_static',
+  '/data/web_static/releases',
+  '/data/web_static/shared',
+  '/data/web_static/releases/test',
+]:
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  recurse => true,
 }
--> exec {'c':
-  command => '/usr/bin/env mkdir -p /data/web_static/releases/test/',
+
+# Create a fake HTML file for testing
+file { '/data/web_static/releases/test/index.html':
+  content => 'web_static test',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
--> exec {'d':
-  command => '/usr/bin/env mkdir -p /data/web_static/shared/',
+
+# Create or recreate the symbolic link
+file { '/data/web_static/current':
+  ensure => link,
+  target => '/data/web_static/releases/test',
+  owner  => 'ubuntu',
+  group  => 'ubuntu',
+  notify => Service['nginx'],
 }
--> exec {'e':
-  command => '/usr/bin/env echo "<html>
-  <head>
-  </head>
-  <body>
-	Holberton School
-  </body>
-</html>" > /data/web_static/releases/test/index.html',
+
+# Update Nginx configuration
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => "
+server {
+  listen 80;
+  listen [::]:80;
+
+  server_name default_server;
+  add_header X-Served-By \$hostname;
+
+  root /var/www/html;
+  index index.htm index.html;
+
+  location / {
+    try_files \$uri \$uri/ =404;
+  }
+
+  location /hbnb_static {
+    alias /data/web_static/current/;
+    index index.htm index.html;
+  }
+
+  location /redirect_me {
+    return 301 'https://www.youtube.com/watch?v=axlUv9evU2k';
+  }
+
+  # Redirect error page
+  error_page 404 /404.html;
 }
--> exec {'f':
-  command => '/usr/bin/env ln -sf /data/web_static/releases/test /data/web_static/current',
+",
+  require => Package['nginx'],
+  notify  => Service['nginx'],
 }
--> exec {'h':
-  command => '/usr/bin/env sed -i "/listen 80 default_server/a location /hbnb_static/ { alias /data/web_static/current/;}" /etc/nginx/sites-available/default',
+
+# Create a symlink to enable the site if it doesn't exist
+file { '/etc/nginx/sites-enabled/default':
+  ensure  => link,
+  target  => '/etc/nginx/sites-available/default',
+  require => File['/etc/nginx/sites-available/default'],
+  notify  => Service['nginx'],
 }
--> exec {'i':
-  command => '/usr/bin/env chown -R ubuntu:ubuntu /data',
-}
--> exec {'g':
-  command => '/usr/bin/env service nginx restart',
+
+# Restart Nginx service
+service { 'nginx':
+  ensure => 'running',
+  enable => true,
 }
